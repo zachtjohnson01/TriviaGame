@@ -91,7 +91,7 @@ $(document).ready(function() {
                 //Generate paragraph elements and assign classes
                 for (k=0; k<paragraphnum; k++) {
                     $("div.row").children().append("<p>");
-                    $("p").eq(0).addClass("heading").html("Trivia");
+                    $("p").eq(0).addClass("heading jumbotron text-center").html("<h1>Trivia - Categories</h1>");
                     $("p").eq(1).addClass("timer");
                     $("p").eq(2).addClass("category");
                     $("p").eq(3).addClass("difficulty");
@@ -108,9 +108,9 @@ $(document).ready(function() {
                 $("p").eq(9).after("<button>");
                 $("p").eq(9).after("<button>");
                 $("button").attr("type","button");
-                $("button").eq(0).addClass("startbutton").html("Start");
+                $("button").eq(0).addClass("startbutton btn btn-default center-block").html("Start");
                 $("button").eq(1).addClass("nextquestion").html("Next Question");
-                $("button").eq(2).addClass("restartgame").html("Restart Game");
+                $("button").eq(2).addClass("restartgame btn btn-default center-block").html("Restart Game");
         }
 
         function showHTML() {
@@ -129,7 +129,9 @@ $(document).ready(function() {
         function decrement() {
             number --;
             $("p.timer").html("<p>"+number+"</p>");
-            if (number <= 0) {
+            if (number <=5 && number > 0) {
+                $("p.timer").effect("bounce")
+            } else if (number <= 0) {
                 stop();
                 $("p.timer").html("<p>Time is up</p>");
                 $("p.correct").html(answercorrect+" correct answer");
@@ -137,6 +139,7 @@ $(document).ready(function() {
                 nextquestiontimer();
                 amtincorrect ++;
                 $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
+                $(".correct").addClass("correctcolor");
             };
         }
         
@@ -185,19 +188,21 @@ $(document).ready(function() {
         function displayquestion() {
             $("p.correct").removeClass("correct");
             $("p.selection").removeClass("selection");
+            $(".correctcolor").removeClass("correctcolor");
             $("p.ans").show();
             resettimer();
             run();
             answercorrect = ""
             options = ""
 
-            //Insert the category into the question row
-            $("p.category").html(questioncount+": "+questions[questionnum].category);
-
+            //Insert the category into the category paragraph
+            $("p.category").html("Category: "+questions[questionnum].category);
             
-            //Insert the category into the question row
+            //Insert the difficulty into the difficulty paragraph
             $("p.difficulty").html("Difficulty: "+questions[questionnum].difficulty);
 
+            //Display Score
+            $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
 
             //Insert the question into the question row
             $("p.question").html(questions[questionnum].question);
@@ -240,6 +245,7 @@ $(document).ready(function() {
             if (selectanswer === "on") {
                 $(this).removeClass("selection");
                 $(this).addClass("selection");
+                $(".correct").addClass("correctcolor");
                 answerselection = $(this).text();
                 if (answerselection === answercorrect && questions.length !== questioncount) {
                     amtcorrect ++;

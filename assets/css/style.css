@@ -1,0 +1,38 @@
+.container {
+    background-color: rgb(4, 6, 99);
+    color: white;
+}
+
+.jumbotron {
+    background-color:  rgb(4, 6, 99);
+}
+
+.vertical-center {
+    min-height: 100%; /*Fallback for browsers that do not support vh unit */
+    min-height: 100vh; /* These two lines are counted as one */
+
+    display: flex;
+    align-items: center;
+}
+
+
+
+.ans {
+    background-color:  rgb(138, 141, 199);
+    color:rgb(4,6,99);
+    border-radius: 10px;
+    text-align: center;
+
+}
+
+.selection {
+    background-color: red;
+}
+
+.correctcolor {
+    background-color: green;
+}
+
+.correct.selection {
+    background-color: green;
+}
