@@ -8,11 +8,13 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
         }).done(function(response) {
+            console.log(response);
             for (i=0;i<10;i++) {
                 var category = response.results[i].category;
                 var question = response.results[i].question;
                 var anscorrect = response.results[i].correct_answer;
                 var answers = response.results[i].incorrect_answers;
+                var difficulty = response.results[i].difficulty;
                 //Append the correct answer to the incorrect answers to create answers group
                 response.results[i].incorrect_answers.push(anscorrect);
                 questions.push({
@@ -20,6 +22,7 @@ $(document).ready(function() {
                     "anscorrect":anscorrect,
                     "answers":shuffle(answers),
                     "category":category,
+                    "difficulty":difficulty,
                 });
             };
             
@@ -45,7 +48,9 @@ $(document).ready(function() {
         
         var questionnum = 0;
         var intervalId;
+        var questioninterval;
         var number = 15;
+        var nextquestiontimernumber = 3;
         var answercorrect;
         var answerselection;
         var amtcorrect = 0;
@@ -64,7 +69,7 @@ $(document).ready(function() {
 
         function generateHTML() {
                 var rownum = 1;
-                var paragraphnum = 8;
+                var paragraphnum = 10;
                 var columnnum = 1;
 
                 HTMLcontainer = $("div.container");
@@ -88,18 +93,20 @@ $(document).ready(function() {
                     $("div.row").children().append("<p>");
                     $("p").eq(0).addClass("heading").html("Trivia");
                     $("p").eq(1).addClass("timer");
-                    $("p").eq(2).addClass("question");
-                    $("p").eq(3).addClass("ans ans1");
-                    $("p").eq(4).addClass("ans ans2");
-                    $("p").eq(5).addClass("ans ans3");
-                    $("p").eq(6).addClass("ans ans4");
-                    $("p").eq(7).addClass("score");
+                    $("p").eq(2).addClass("category");
+                    $("p").eq(3).addClass("difficulty");
+                    $("p").eq(4).addClass("question");
+                    $("p").eq(5).addClass("ans ans1");
+                    $("p").eq(6).addClass("ans ans2");
+                    $("p").eq(7).addClass("ans ans3");
+                    $("p").eq(8).addClass("ans ans4");
+                    $("p").eq(9).addClass("score");
                 };
 
                 //Generate and place buttons
                 $("p").eq(0).after("<button>");
-                $("p").eq(7).after("<button>");
-                $("p").eq(7).after("<button>");
+                $("p").eq(9).after("<button>");
+                $("p").eq(9).after("<button>");
                 $("button").attr("type","button");
                 $("button").eq(0).addClass("startbutton").html("Start");
                 $("button").eq(1).addClass("nextquestion").html("Next Question");
@@ -113,11 +120,12 @@ $(document).ready(function() {
             $("div.container button.restartgame").hide();
         }
 
+        
         function run() {
-            clearInterval(intervalId);
+            stop();
             intervalId = setInterval(decrement,1000);
         };
-
+        
         function decrement() {
             number --;
             $("p.timer").html("<p>"+number+"</p>");
@@ -125,19 +133,53 @@ $(document).ready(function() {
                 stop();
                 $("p.timer").html("<p>Time is up</p>");
                 $("p.correct").html(answercorrect+" correct answer");
-                $("button.nextquestion").show();
+                // $("button.nextquestion").show();
+                nextquestiontimer();
                 amtincorrect ++;
                 $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
             };
         }
-
+        
         function stop() {
             clearInterval(intervalId);
         };
-
+        
         function resettimer () {
             number = 15;
+            $("p.timer").html(15);
         };
+        
+        function nextquestiontimer() {
+            stopnextquestiontimer();
+            questioninterval = setInterval(decrement2,1000);
+        }
+
+        function decrement2() {
+            nextquestiontimernumber --;
+            if (nextquestiontimernumber <= 0) {
+                stopnextquestiontimer(); 
+                resetnextquestiontimer();   
+                questionnum ++;
+                questioncount++;
+                //Make answers selectable
+                selectanswer = "on";
+                displayquestion();
+                $("div.container button.nextquestion").hide();
+                // $("p.timer").html("<p>Time is up</p>");
+                // $("p.correct").html(answercorrect+" correct answer");
+                // $("button.nextquestion").show();
+                // amtincorrect ++;
+                // $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
+            };
+        }
+
+        function stopnextquestiontimer() {
+            clearInterval(questioninterval);
+        }
+
+        function resetnextquestiontimer() {
+            nextquestiontimernumber = 3;
+        }
 
         //Display question and answer options, restart the timer
         function displayquestion() {
@@ -148,10 +190,18 @@ $(document).ready(function() {
             run();
             answercorrect = ""
             options = ""
-            //Insert the question into the question row
-            $("p.question").html(questioncount+": "+questions[questionnum].question);
-            answerlen = questions[questionnum].answers.length;
 
+            //Insert the category into the question row
+            $("p.category").html(questioncount+": "+questions[questionnum].category);
+
+            
+            //Insert the category into the question row
+            $("p.difficulty").html("Difficulty: "+questions[questionnum].difficulty);
+
+
+            //Insert the question into the question row
+            $("p.question").html(questions[questionnum].question);
+            answerlen = questions[questionnum].answers.length;
             //Insert answers one through four into ans1 through ans4 rows
             for (i=0;i<answerlen; i++) {
                 var ansnum = i+1;
@@ -193,24 +243,26 @@ $(document).ready(function() {
                 answerselection = $(this).text();
                 if (answerselection === answercorrect && questions.length !== questioncount) {
                     amtcorrect ++;
-                    $("button.nextquestion").show();
+                    // $("button.nextquestion").show();
                     stop();
+                    nextquestiontimer();
                 } else if (answerselection === answercorrect && questions.length === questioncount) {
                     amtcorrect++;
                     $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
-                    $("button.nextquestion").hide();
+                    // $("button.nextquestion").hide();
                     $("button.restartgame").show();
                     stop();
                 } else if (answerselection !== answercorrect && questions.length !== questioncount) {
                     amtincorrect ++;
-                    $("button.nextquestion").show();
+                    // $("button.nextquestion").show();
                     //Display 'incorrect' next to selected answer
                     $("p.selection").html(answerselection+" incorrect");
                     stop();
+                    nextquestiontimer();
                 } else if (answerselection !== answercorrect && questions.length === questioncount) {
                     amtincorrect ++;
                     $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
-                    $("button.nextquestion").hide();
+                    // $("button.nextquestion").hide();
                     $("button.restartgame").show();
                     //Display 'incorrect' next to selected answer
                     $("p.selection").html(answerselection+" incorrect");
@@ -225,16 +277,16 @@ $(document).ready(function() {
             $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
         });
 
-        $("body").on("click","button.nextquestion", function() {
-            questionnum ++;
-            questioncount++;
-            //Reset countdown clock display to 15 seconds
-            $("p.timer").html("15");
-            //Make answers selectable
-            selectanswer = "on";
-            displayquestion();
-            $("div.container button.nextquestion").hide();
-        });
+        // $("body").on("click","button.nextquestion", function() {
+        //     questionnum ++;
+        //     questioncount++;
+        //     //Reset countdown clock display to 15 seconds
+        //     $("p.timer").html("15");
+        //     //Make answers selectable
+        //     selectanswer = "on";
+        //     displayquestion();
+        //     $("div.container button.nextquestion").hide();
+        // });
 
         $("body").on("click","button.restartgame", function() {
             //Remove HTML to allow showHTML() function to rewrite
