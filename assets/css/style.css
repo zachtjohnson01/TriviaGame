@@ -36,3 +36,17 @@
 .correct.selection {
     background-color: green;
 }
+
+button:focus {
+    outline:0 !important;
+}
+
+@font-face { font-family: Digital; src: url('../fonts/digital-7.ttf'); } 
+.timer {
+   font-family: Digital;
+   font-size: 50px;
+}
+
+p.timer p {
+    background-color: gray;
+}
