@@ -1,10 +1,13 @@
+body {
+    background-image: url("../images/background.gif");
+    background-size: cover;
+}
 .container {
-    background-color: rgb(4, 6, 99);
     color: white;
 }
 
 .jumbotron {
-    background-color:  rgb(4, 6, 99);
+    background-color: black;
 }
 
 .vertical-center {
@@ -14,8 +17,6 @@
     display: flex;
     align-items: center;
 }
-
-
 
 .ans {
     background-color:  rgb(138, 141, 199);
