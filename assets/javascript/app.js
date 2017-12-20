@@ -9,7 +9,6 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET",
         }).done(function(response) {
-            console.log(response);
             for (i=0;i<10;i++) {
                 var category = response.results[i].category;
                 var question = response.results[i].question;
@@ -21,6 +20,7 @@ $(document).ready(function() {
                 questions.push({
                     "question":question,
                     "anscorrect":anscorrect,
+                    //Shuffle the answers so they're not in the same order if a question is repeated
                     "answers":shuffle(answers),
                     "category":category,
                     "difficulty":difficulty,
@@ -66,12 +66,11 @@ $(document).ready(function() {
         var answerlen;
         var questions = ajaxcall();
 
-        console.log(questions);
-
         function generateHTML() {
                 var rownum = 1;
-                var paragraphnum = 10;
+                var paragraphnum = 6;
                 var columnnum = 1;
+                var buttonnum = 7;
 
                 HTMLcontainer = $("div.container");
                 HTMLheading = "<div class='row heading'></div>";
@@ -80,42 +79,40 @@ $(document).ready(function() {
                 HTMLparagragh = "<p>";
 
                 //Generate rows
-                for (i=0; i<rownum; i++) {
+                for (var i=0; i<rownum; i++) {
                     HTMLcontainer.append(HTMLrow);
                 }
 
                 //Generate columns
-                for (j=0; j<columnnum; j++) {
+                for (var j=0; j<columnnum; j++) {
                     $("div.row").append(HTMLfullcolumn);
                 };
 
                 //Generate paragraph elements and assign classes
-                for (k=0; k<paragraphnum; k++) {
+                for (var k=0; k<paragraphnum; k++) {
                     $("div.row").children().append("<p>");
                     $("p").eq(0).addClass("heading text-center h1").html("Trivia - Categories");
                     $("p").eq(1).addClass("timer text-right");
                     $("p").eq(2).addClass("category text-center h1");
                     $("p").eq(3).addClass("difficulty");
-                    $("p").eq(4).addClass("question");
-                    $("p").eq(9).addClass("score");
+                    $("p").eq(4).addClass("question h4");
+                    $("p").eq(5).addClass("score");
                 };
 
-                //Generate and place buttons
-                $("p").eq(0).after("<button>");
-                $("p").eq(4).after("<button>");
-                $("p").eq(4).after("<button>");
-                $("p").eq(4).after("<button>");
-                $("p").eq(4).after("<button>");
-                $("p").eq(5).after("<button>");
-                $("p").eq(5).after("<button>");
-                $("button").attr("type","button");
-                $("button").eq(0).addClass("startbutton btn btn-default center-block").html("Start");
-                $("button").eq(1).addClass("ans ans1 btn-block");
-                $("button").eq(2).addClass("ans ans2 btn-block");
-                $("button").eq(3).addClass("ans ans3 btn-block");
-                $("button").eq(4).addClass("ans ans4 btn-block");
-                $("button").eq(5).addClass("nextquestion").html("Next Question");
-                $("button").eq(6).addClass("restartgame btn btn-default center-block").html("Restart Game");
+                for (var l=0; l<buttonnum; l++) {
+                    $("div.row").children().append("<button>");
+                    $("button").attr("type","button");
+                    $("button").eq(0).addClass("startbutton btn btn-default center-block").html("Start");
+                    $("button").eq(1).addClass("ans ans1 btn-block");
+                    $("button").eq(2).addClass("ans ans2 btn-block");
+                    $("button").eq(3).addClass("ans ans3 btn-block");
+                    $("button").eq(4).addClass("ans ans4 btn-block");
+                    $("button").eq(5).addClass("nextquestion").html("Next Question");
+                    $("button").eq(6).addClass("restartgame btn btn-default center-block").html("Restart Game");
+                }
+                //Add another p below last answer button and to the bottom for spacing
+                $("div.row").append("<p>");
+                $("button.ans4").after("<p>");
         }
 
         function showHTML() {
@@ -147,7 +144,7 @@ $(document).ready(function() {
                 $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
                 $(".correct").addClass("correctcolor");
             };
-        }
+        };
         
         function stop() {
             clearInterval(intervalId);
@@ -161,7 +158,7 @@ $(document).ready(function() {
         function nextquestiontimer() {
             stopnextquestiontimer();
             questioninterval = setInterval(decrement2,1000);
-        }
+        };
 
         function decrement2() {
             nextquestiontimernumber --;
@@ -175,15 +172,15 @@ $(document).ready(function() {
                 displayquestion();
                 $("div.container button.nextquestion").hide();
             };
-        }
+        };
 
         function stopnextquestiontimer() {
             clearInterval(questioninterval);
-        }
+        };
 
         function resetnextquestiontimer() {
             nextquestiontimernumber = 3;
-        }
+        };
 
         //Display question and answer options, restart the timer
         function displayquestion() {
@@ -279,7 +276,7 @@ $(document).ready(function() {
                     $("button.selection").html(answerselection);
                     stop();
                 };
-            }
+            };
             //Turn off ability to select answer
             selectanswer = "off";
             //Display 'correct' next to correct answer
@@ -288,23 +285,11 @@ $(document).ready(function() {
             $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
         });
 
-        // $("body").on("click","button.nextquestion", function() {
-        //     questionnum ++;
-        //     questioncount++;
-        //     //Reset countdown clock display to 15 seconds
-        //     $("p.timer").html("15");
-        //     //Make answers selectable
-        //     selectanswer = "on";
-        //     displayquestion();
-        //     $("div.container button.nextquestion").hide();
-        // });
-
         $("body").on("click","button.restartgame", function() {
             //Remove HTML to allow showHTML() function to rewrite
             $(".container").children().remove();
             //Call restartGame() function to reset variables and rewrite HTML
             restartGame();
-
         });
         function restartGame () {
             questionnum = 0;
@@ -318,4 +303,4 @@ $(document).ready(function() {
             questions = ajaxcall();
             showHTML();
         };
-}) 
+});
