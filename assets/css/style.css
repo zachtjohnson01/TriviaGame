@@ -1,13 +1,25 @@
 body {
-    background-image: url("../images/background.gif");
+    /* background-image: url("../images/shapes.gif"); */
     background-size: cover;
+    overflow-x: hidden; /*added so scrollbar doesn't apppear when img moves off screen */
+}
+
+img.running {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    margin-left: -50px;
+    margin-top: 300px;
+
 }
 .container {
+    background-color: rgb(20, 23, 80);
     color: white;
+
 }
 
 .jumbotron {
-    background-color: black;
+    background-color: rgb(20, 23, 80);
 }
 
 .vertical-center {

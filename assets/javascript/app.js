@@ -1,4 +1,8 @@
 $(document).ready(function() {
+
+
+
+
     function ajaxcall () {
         //Query trivia api and store values in an array object
         var queryURL = "https://opentdb.com/api.php?amount=10";
@@ -65,6 +69,7 @@ $(document).ready(function() {
         var selectanswer = "on";
         var answerlen;
         var questions = ajaxcall();
+        var runningnum = 1;
 
         function generateHTML() {
                 var rownum = 1;
@@ -243,23 +248,55 @@ $(document).ready(function() {
 
         //Return next question button after selecting an answer
         $("body").on("click","button.ans",function() {
-            // $("p.selection").html("");
+
             if (selectanswer === "on") {
                 $(this).removeClass("selection");
                 $(this).addClass("selection");
                 $(".correct").addClass("correctcolor");
+                
                 answerselection = $(this).text();
                 if (answerselection === answercorrect && questions.length !== questioncount) {
                     amtcorrect ++;
                     // $("button.nextquestion").show();
                     stop();
                     nextquestiontimer();
+                    //Create new running man each time answer is selected
+                    window_width = ($(window).width()+50);
+                    var running = (`<img src='assets/images/running.gif' class='running running-${runningnum}'>`);
+                    $(".vertical-center").append(running);
+                    $(`img.running-${runningnum}`).animate({
+                        left: "+=" + window_width,
+                        }, 3000, function() {
+                            $(`img.running-${runningnum}`).hide();
+                            $(`img.running-${runningnum}`).animate({
+                                left: "0"
+                            },"fast",function(){
+                                $(`img.running-${runningnum}`).show()
+                            });
+                        });
+                    runningnum++;
+                    
                 } else if (answerselection === answercorrect && questions.length === questioncount) {
                     amtcorrect++;
                     $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
                     // $("button.nextquestion").hide();
                     $("button.restartgame").show();
                     stop();
+                    //Create new running man each time answer is selected
+                    window_width = ($(window).width()+50);
+                    var running = (`<img src='assets/images/running.gif' class='running running-${runningnum}'>`);
+                    $(".vertical-center").append(running);
+                    $(`img.running-${runningnum}`).animate({
+                        left: "+=" + window_width,
+                        }, 3000, function() {
+                            $(`img.running-${runningnum}`).hide();
+                            $(`img.running-${runningnum}`).animate({
+                                left: "0"
+                            },"fast",function(){
+                                $(`img.running-${runningnum}`).show()
+                            });
+                        });
+                    runningnum++;
                 } else if (answerselection !== answercorrect && questions.length !== questioncount) {
                     amtincorrect ++;
                     // $("button.nextquestion").show();
