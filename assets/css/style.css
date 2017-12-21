@@ -1,6 +1,4 @@
 body {
-    /* background-image: url("../images/shapes.gif"); */
-    background-size: cover;
     overflow-x: hidden; /*added so scrollbar doesn't apppear when img moves off screen */
 }
 
