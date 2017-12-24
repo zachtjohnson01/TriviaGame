@@ -16,9 +16,8 @@ img.balloon {
     height: 150px;
     width: 150px;
     position: absolute;
-    margin-left: 50%;
-    margin-top: 50%;
-
+    bottom: -150px;
+    left: 50%;
 }
 .container {
     background-color: rgb(20, 23, 80);
@@ -56,6 +55,10 @@ img.balloon {
 
 .correct.selection {
     background-color: green;
+}
+
+.timeoutcolor {
+    background-color: gray;
 }
 
 button:focus {

@@ -141,7 +141,7 @@ $(document).ready(function() {
             $("p.timer").html(number);
             if (number <=5 && number > 0) {
                 $("p.timer").effect("bounce")
-            } else if (number <= 0) {
+            } else if (number <= 0 && questions.length !== questioncount) {
                 stop();
                 $("p.timer").html("Time is up");
                 $("button.correct").html(answercorrect+" correct answer");
@@ -149,8 +149,20 @@ $(document).ready(function() {
                 nextquestiontimer();
                 amtincorrect ++;
                 $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
-                $(".correct").addClass("correctcolor");
-            };
+                $(".correct").addClass("timeoutcolor");
+                balloonfloat();
+            } else if (number <=0 && questions.length === questioncount) {
+                stop();
+                $("p.timer").html("Time is up");
+                $("button.correct").html(answercorrect+" correct answer");
+                // $("button.nextquestion").show();
+                stopnextquestiontimer();
+                $("button.restartgame").show();
+                amtincorrect ++;
+                $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
+                $(".correct").addClass("timeoutcolor");
+                balloonfloat();
+            }
         };
         
         function stop() {
@@ -189,11 +201,26 @@ $(document).ready(function() {
             nextquestiontimernumber = 3;
         };
 
+        function balloonfloat() {
+            window_height = ($(window).height());
+            var balloon = (`<img class='balloon balloon-${balloonnum}'>`);
+            $(".vertical-center").append(balloon);
+            $(`.balloon-${balloonnum}`).attr("src","assets/images/balloon.gif");
+            $(`img.balloon-${balloonnum}`).animate({
+                bottom: `+=${window_height}`,
+                }, 2000, function() {
+                    $(`img.balloon-${balloonnum}`).attr("src","");
+                    $(`img.balloon-${balloonnum}`).remove();
+                    balloonnum++;
+                });
+        };
+
         //Display question and answer options, restart the timer
         function displayquestion() {
             $("button.correct").removeClass("correct");
             $("button.selection").removeClass("selection");
             $(".correctcolor").removeClass("correctcolor");
+            $(".timeoutcolor").removeClass("timeoutcolor");
             $("button.ans").show();
             resettimer();
             run();
@@ -306,17 +333,18 @@ $(document).ready(function() {
                     $("button.selection").html(answerselection);
                     stop();
                     nextquestiontimer();
-                    window_height = ($(window).height());
-                    var balloon = (`<img class='balloon balloon-${balloonnum}'>`);
-                    $(".vertical-center").append(balloon);
-                    $(`.balloon-${balloonnum}`).attr("src","assets/images/balloon.gif");
-                    $(`img.balloon-${balloonnum}`).animate({
-                        bottom: `+=${window_height}`,
-                        }, 2000, function() {
-                            $(`img.balloon-${balloonnum}`).attr("src","");
-                            $(`img.balloon-${balloonnum}`).remove();
-                            balloonnum++;
-                        });
+                    balloonfloat();
+                    // window_height = ($(window).height());
+                    // var balloon = (`<img class='balloon balloon-${balloonnum}'>`);
+                    // $(".vertical-center").append(balloon);
+                    // $(`.balloon-${balloonnum}`).attr("src","assets/images/balloon.gif");
+                    // $(`img.balloon-${balloonnum}`).animate({
+                    //     bottom: `+=${window_height}`,
+                    //     }, 2000, function() {
+                    //         $(`img.balloon-${balloonnum}`).attr("src","");
+                    //         $(`img.balloon-${balloonnum}`).remove();
+                    //         balloonnum++;
+                    //     });
                     
                 } else if (answerselection !== answercorrect && questions.length === questioncount) {
                     amtincorrect ++;
@@ -326,16 +354,17 @@ $(document).ready(function() {
                     //Display 'incorrect' next to selected answer
                     $("button.selection").html(answerselection);
                     stop();
-                    window_height = ($(window).height()+150);
-                    var balloon = (`<img src='assets/images/balloon.gif' class='balloon balloon-${balloonnum}'>`);
-                    $(".vertical-center").append(balloon);
-                    $(`img.balloon-${balloonnum}`).animate({
-                        bottom: `+=${window_height}`,
-                        }, 2000, function() {
-                            $(`img.balloon-${balloonnum}`).attr("src","");
-                            $(`img.balloon-${balloonnum}`).remove();
-                            balloonnum++;
-                        });
+                    balloonfloat();
+                    // window_height = ($(window).height()+150);
+                    // var balloon = (`<img src='assets/images/balloon.gif' class='balloon balloon-${balloonnum}'>`);
+                    // $(".vertical-center").append(balloon);
+                    // $(`img.balloon-${balloonnum}`).animate({
+                    //     bottom: `+=${window_height}`,
+                    //     }, 2000, function() {
+                    //         $(`img.balloon-${balloonnum}`).attr("src","");
+                    //         $(`img.balloon-${balloonnum}`).remove();
+                    //         balloonnum++;
+                    //     });
                 };
             };
             //Turn off ability to select answer
