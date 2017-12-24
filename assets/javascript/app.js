@@ -1,4 +1,5 @@
 $(document).ready(function() {
+   
 
 
 
@@ -70,6 +71,7 @@ $(document).ready(function() {
         var answerlen;
         var questions = ajaxcall();
         var runningnum = 1;
+        var balloonnum = 1;
 
         function generateHTML() {
                 var rownum = 1;
@@ -96,7 +98,7 @@ $(document).ready(function() {
                 //Generate paragraph elements and assign classes
                 for (var k=0; k<paragraphnum; k++) {
                     $("div.row").children().append("<p>");
-                    $("p").eq(0).addClass("heading text-center h1").html("Trivia - Categories");
+                    $("p").eq(0).addClass("heading text-center h1").html("Trivia: Stick Figures and Balloon Pops");
                     $("p").eq(1).addClass("timer text-right");
                     $("p").eq(2).addClass("category text-center h1");
                     $("p").eq(3).addClass("difficulty");
@@ -270,7 +272,7 @@ $(document).ready(function() {
                             $(`img.running-${runningnum}`).hide();
                             $(`img.running-${runningnum}`).animate({
                                 left: "0"
-                            },"fast",function(){
+                            },1000,function(){
                                 $(`img.running-${runningnum}`).show()
                             });
                         });
@@ -292,7 +294,7 @@ $(document).ready(function() {
                             $(`img.running-${runningnum}`).hide();
                             $(`img.running-${runningnum}`).animate({
                                 left: "0"
-                            },"fast",function(){
+                            },1000,function(){
                                 $(`img.running-${runningnum}`).show()
                             });
                         });
@@ -304,6 +306,18 @@ $(document).ready(function() {
                     $("button.selection").html(answerselection);
                     stop();
                     nextquestiontimer();
+                    window_height = ($(window).height());
+                    var balloon = (`<img class='balloon balloon-${balloonnum}'>`);
+                    $(".vertical-center").append(balloon);
+                    $(`.balloon-${balloonnum}`).attr("src","assets/images/balloon.gif");
+                    $(`img.balloon-${balloonnum}`).animate({
+                        bottom: `+=${window_height}`,
+                        }, 2000, function() {
+                            $(`img.balloon-${balloonnum}`).attr("src","");
+                            $(`img.balloon-${balloonnum}`).remove();
+                            balloonnum++;
+                        });
+                    
                 } else if (answerselection !== answercorrect && questions.length === questioncount) {
                     amtincorrect ++;
                     $("p.score").html("Correct: "+amtcorrect+" Incorrect: "+amtincorrect);
@@ -312,6 +326,16 @@ $(document).ready(function() {
                     //Display 'incorrect' next to selected answer
                     $("button.selection").html(answerselection);
                     stop();
+                    window_height = ($(window).height()+150);
+                    var balloon = (`<img src='assets/images/balloon.gif' class='balloon balloon-${balloonnum}'>`);
+                    $(".vertical-center").append(balloon);
+                    $(`img.balloon-${balloonnum}`).animate({
+                        bottom: `+=${window_height}`,
+                        }, 2000, function() {
+                            $(`img.balloon-${balloonnum}`).attr("src","");
+                            $(`img.balloon-${balloonnum}`).remove();
+                            balloonnum++;
+                        });
                 };
             };
             //Turn off ability to select answer

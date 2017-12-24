@@ -1,5 +1,6 @@
 body {
     overflow-x: hidden; /*added so scrollbar doesn't apppear when img moves off screen */
+    overflow-y: hidden; /*added so scrollbar doesn't apppear when img moves off screen */
 }
 
 img.running {
@@ -7,7 +8,16 @@ img.running {
     width: 50px;
     position: absolute;
     margin-left: -50px;
-    margin-top: 300px;
+    margin-top: 225px;
+
+}
+
+img.balloon {
+    height: 150px;
+    width: 150px;
+    position: absolute;
+    margin-left: 50%;
+    margin-top: 50%;
 
 }
 .container {
